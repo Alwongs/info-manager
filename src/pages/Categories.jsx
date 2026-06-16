@@ -1,3 +1,5 @@
+//Возможно не нужный компонет
+
 import { useState } from 'react';
 
 export default function Categories({ categories, onAddCategory }) {

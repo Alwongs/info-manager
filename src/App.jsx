@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import Home from './pages/Home';
 import Categories from './pages/Categories';
@@ -9,7 +9,8 @@ import Settings from './pages/Settings';
 export default function App() {
     const [categories, setCategories] = useState([]);
     const [items, setItems] = useState([]);
-    const [selectedCategory, setSelectedCategory] = useState(null);
+    const [activePage, setActivePage] = useState('/');
+    const location = useLocation();
 
     useEffect(() => {
         const savedCategories = localStorage.getItem('infoManagerCategories');
@@ -19,6 +20,10 @@ export default function App() {
         if (savedItems) setItems(JSON.parse(savedItems));
     }, []);
 
+    useEffect(() => {
+        setActivePage(location.pathname);
+    }, [location]);
+
     const handleAddCategory = (name) => {
         const newCategory = { id: Date.now(), name };
         const updated = [...categories, newCategory];
@@ -26,10 +31,8 @@ export default function App() {
         localStorage.setItem('infoManagerCategories', JSON.stringify(updated));
     };
 
-    const handleSelectCategory = (category) => setSelectedCategory(category);
-
-    const handleAddItem = (text) => {
-        const newItem = { id: Date.now(), text, categoryId: selectedCategory?.id || null };
+    const handleAddItem = (text, categoryId) => {
+        const newItem = { id: Date.now(), text, categoryId: categoryId || null };
         const updated = [newItem, ...items];
         setItems(updated);
         localStorage.setItem('infoManagerItems', JSON.stringify(updated));
@@ -45,40 +48,36 @@ export default function App() {
         <div className="app-layout">
             <Sidebar
                 categories={categories}
-                selectedCategory={selectedCategory}
-                onSelectCategory={handleSelectCategory}
                 onAddCategory={handleAddCategory}
+                activePage={activePage}
             />
             <div className="main-content">
                 <Routes>
-                    <Route
-                        path="/"
-                        element={
-                            <Home
-                                category={selectedCategory}
-                                items={items.filter(item => item.categoryId === selectedCategory?.id)}
-                                onAddItem={handleAddItem}
-                                onDeleteItem={handleDeleteItem}
-                            />
-                        }
-                    />
-                    <Route
-                        path="/categories"
-                        element={
-                            <Categories
-                                categories={categories}
-                                onAddCategory={handleAddCategory}
-                            />
-                        }
-                    />
-                    <Route
-                        path="/archive"
-                        element={<Archive />}
-                    />
-                    <Route
-                        path="/settings"
-                        element={<Settings />}
-                    />
+                    {/* Главная — без категории (или можно убрать) */}
+                    <Route path="/" element={
+                        <Home
+                            categories={categories}
+                            items={items}
+                            onAddItem={handleAddItem}
+                            onDeleteItem={handleDeleteItem}
+                        />
+                    } />
+
+                    {/* Страница конкретной категории */}
+                    <Route path="/categories/:id" element={
+                        <Home
+                            categories={categories}
+                            items={items}
+                            onAddItem={handleAddItem}
+                            onDeleteItem={handleDeleteItem}
+                        />
+                    } />
+
+                    {/* Страницы управления и настроек */}
+                    <Route path="/categories" element={<Categories categories={categories} onAddCategory={handleAddCategory} />} />
+                    <Route path="/archive" element={<Archive />} />
+                    <Route path="/settings" element={<Settings />} />
+
                     <Route path="*" element={<Navigate to="/" />} />
                 </Routes>
             </div>

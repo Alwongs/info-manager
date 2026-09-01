@@ -1,0 +1,70 @@
+.item {
+    border-bottom: 1px solid rgb(197, 211, 197);
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+    padding: 2px 4px;
+    transition: 0.2s;
+}
+.item:hover {
+    background-color: #4679bb;
+    color: #fff;
+}
+
+/* ✅ Стиль для выбранной категории */
+.item.selected {
+    background: #4679bb;
+    color: white;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+.item.selected .item-title {
+    color: white;
+}
+.item.selected .icon {
+    color: white;
+}
+
+.item-title {
+    /* border: 1px solid red; */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 180px;
+    font-size: 14px;
+}
+
+.item-actions {
+    display: flex;
+}
+
+/* Стили для кнопки удаления */
+.item-btn {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    /* transition: 0.2s; */
+}
+.item-btn-edit {
+    color: blue;
+    transition: 0.3s;
+}
+.item-btn-del {
+    color: red;
+    transition: 0.3s;
+}
+
+.item-btn-edit:hover {
+    background-color: #3538dc; /* Красный фон при наведении */
+    color: white;
+}
+.item-btn-del:hover {
+    background-color: #dc3545; /* Красный фон при наведении */
+    color: white;
+}

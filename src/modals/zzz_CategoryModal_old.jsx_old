@@ -1,0 +1,62 @@
+import React, { useState, useEffect } from 'react';
+import styles from './CategoryModal.module.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+
+export default function CategoryModal({ visible, onClose, onSave, onAdd }) {
+    const [name, setName] = useState('');
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (!name.trim()) return; 
+        onAdd(name);
+        setName('');
+    };    
+
+    const handleCloseModal = (e) => {
+        e.preventDefault();
+        setName('');
+        onClose();
+    }
+
+    if (!visible) return;
+    
+    return (
+        <div className={styles['wrapper']}>
+            <div className={styles['modal']}>
+                <div className={styles['modal-top-panel']}>
+                    <button onClick={handleCloseModal}>❌</button>
+                </div>
+
+                <h2 className={styles['modal-title']}>
+                    Новая категория
+                </h2>
+
+                <form
+                    className={styles['modal-form']}
+                    onSubmit={handleSubmit}
+                >
+                    <div className={styles['input-container']}>
+                        <input
+                            id="categoryModalInput"
+                            className={styles['input-field']} 
+                            type="text"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            placeholder="Введите название"
+                        />
+                    </div>
+
+                    <div className={styles['btn-container']}>
+                        <button
+                            className={styles['submit-btn']} 
+                            type="submit"
+                        >
+                            Сохранить
+                        </button>                        
+                    </div>
+                </form>
+            </div>
+        </div>
+    );
+}

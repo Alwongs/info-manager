@@ -1,0 +1,41 @@
+# Зависимости
+node_modules/
+
+# Сборка
+dist/
+build/
+release/
+
+# Файлы окружения
+.env
+.env.local
+.env.*.local
+
+# Логи
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Файлы ОС
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Electron
+*.dmg
+*.exe
+*.app
+
+# Временные файлы
+*.tmp
+*.temp
+
+# Настройки пользователя (если есть)
+Z-CMD.txt
+Z-HELP.txt

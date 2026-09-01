@@ -1,0 +1,35 @@
+.column-header {
+    /* border: 3px solid red; */
+    /* border-bottom: 1px solid rgb(214, 214, 214); */
+    background-color: #5e7c97;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 3px 10px;
+    margin-bottom: 14px;
+    
+}
+
+.column-header-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.column-header-add-btn {
+    background-color: #4CAF50;
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.column-header-add-btn:hover {
+    background-color: #45a049;
+}

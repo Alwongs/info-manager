@@ -13,9 +13,6 @@ export default function TopPanel({ onSearch, onChangePassword  }) {
     return (
         <div className={styles['top-panel']}>
             <ul className={styles['menu']}>
-                <li className={styles['menu-item']}>Вид</li>
-                <li className={styles['menu-item']}>Настройки</li>
-                <li className={styles['menu-item']}>Режим</li>
                 <li className={styles['menu-item']} onClick={onChangePassword}>
                     🔑 Сменить пароль
                 </li>                

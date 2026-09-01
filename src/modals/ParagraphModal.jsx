@@ -37,10 +37,8 @@ export default function ParagraphModal({ visible, onClose, onSave, onAdd, onUpda
             return;
         }       
         if (editingItem && onUpdate) {
-            console.log('updating')
             onUpdate(editingItem.id, trimmedTitle, trimmedContent);
         } else {
-            console.log('creating')
             onAdd(noteId, trimmedTitle, trimmedContent);
         }
 
@@ -96,7 +94,6 @@ export default function ParagraphModal({ visible, onClose, onSave, onAdd, onUpda
                         />
                     </div>
 
-                    {/* ✅ Содержимое (textarea) */}
                     <div className={styles['textarea-container']}>
                         <textarea
                             id="paragraphModalTextarea"

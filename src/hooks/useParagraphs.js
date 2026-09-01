@@ -7,14 +7,17 @@ export const useParagraphs = () => {
         try {
             const data = await window.electronAPI.getParagraphsByNote(noteId);
             setParagraphs(data);
+            return data;  // ✅ возвращаем данные
         } catch (error) {
             console.error('Ошибка загрузки параграфов:', error);
+            return [];  // ✅ возвращаем пустой массив при ошибке
         }
     };
 
     const handleAddParagraph = async (noteId, title, content) => {
         try {
             const newParagraph = await window.electronAPI.addParagraph(noteId, title, content);
+            alert('"""""""' + newParagraph.title + '"""""""\n' + newParagraph.content)
             setParagraphs(prev => [newParagraph, ...prev]);
             return newParagraph;
         } catch (error) {
@@ -26,15 +29,10 @@ export const useParagraphs = () => {
 
     const handleUpdateParagraph = async (id, title, content) => {
         try {
-            const success = await window.electronAPI.updateParagraph(id, title, content);
-            
-            if (success) {
-                setParagraphs(prev => prev.map(par => 
-                    par.id === id ? { ...par, title, content } : par
-                ));
-            } else {
-                console.warn('⚠️ Параграф не был сохранен в БД');
-                alert('Не удалось обновить параграф.');
+            const updatedParagraph = await window.electronAPI.updateParagraph(id, title, content);
+            alert('"""""""' + updatedParagraph.title + '"""""""\n' + updatedParagraph.content)
+            if (updatedParagraph?.note_id) {
+                const updatedParagraphs = await loadParagraphsByNote(updatedParagraph.note_id);
             }
         } catch (error) {
             console.error("❌ Ошибка при обновлении:", error);

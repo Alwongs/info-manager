@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import styles from './ParagraphItem.module.css';
@@ -12,6 +12,12 @@ export default function ParagraphItem({ paragraph, onDelete, onEdit, searchQuery
     const [showPasswordDialog, setShowPasswordDialog] = useState(false);
     const [error, setError] = useState(null);
 
+    useEffect(() => {
+        setIsDecrypted(false);
+        setDecryptedContent(null);
+        setError(null);
+    }, [paragraph]);
+
     const isEncrypted = paragraph.is_encrypted === 1;
 
     const highlightedTitle = highlightText(paragraph.title, searchQuery);
@@ -24,42 +30,49 @@ export default function ParagraphItem({ paragraph, onDelete, onEdit, searchQuery
         return highlightText(content, searchQuery);
     };
 
-    // При нажатии кнопки — открываем диалог
     const handleDecrypt = () => {
         setShowPasswordDialog(true);
         setError(null);
     };
 
-    // Расшифровка после ввода пароля
-const handlePasswordSuccess = async (password) => {
-    console.log('1️⃣ handlePasswordSuccess вызван, пароль:', password);
-    setIsLoading(true);
-    setError(null);
-    
-    try {
-        console.log('2️⃣ Устанавливаем пароль...');
-        await window.electronAPI.setMasterPassword(password);
-        console.log('3️⃣ Пароль установлен');
+    const handlePasswordSuccess = async (password) => {
+        setIsLoading(true);
+        setError(null);
         
-        console.log('4️⃣ Расшифровываем...');
-        const result = await window.electronAPI.decryptParagraph(paragraph.id);
-        console.log('5️⃣ Результат расшифровки:', result);
+        try {
+            await window.electronAPI.setMasterPassword(password);
+            const result = await window.electronAPI.decryptParagraph(paragraph.id);
+
+            setDecryptedContent(result.content);
+            setIsDecrypted(true);
+            setShowPasswordDialog(false);
+        } catch (error) {
+            setError('❌ Неверный пароль. Попробуйте снова.');
+            setShowPasswordDialog(true);
+            throw error;
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleEditClick = async () => {
+        let decryptedContentToEdit = paragraph.content;
         
-        setDecryptedContent(result.content);
-        setIsDecrypted(true);
-        setShowPasswordDialog(false);
-        console.log('6️⃣ Диалог закрыт');
-    } catch (error) {
-        console.log('7️⃣ Ошибка:', error.message);
-        setError('❌ Неверный пароль. Попробуйте снова.');
-        setShowPasswordDialog(true);
-        console.log('8️⃣ Диалог должен остаться открытым');
-        throw error;
-    } finally {
-        setIsLoading(false);
-        console.log('9️⃣ finally');
-    }
-};
+        if (paragraph.is_encrypted) {
+            try {
+                const result = await window.electronAPI.decryptParagraph(paragraph.id);
+                decryptedContentToEdit = result.content;
+            } catch (error) {
+                console.error('Ошибка расшифровки:', error);
+                decryptedContentToEdit = '🔒 Ошибка расшифровки';
+            }
+        }
+        
+        onEdit({
+            ...paragraph,
+            content: decryptedContentToEdit
+        });
+    };    
 
     const highlightedContent = getContent();
 
@@ -101,7 +114,7 @@ const handlePasswordSuccess = async (password) => {
                     </button>
                 )}
                 <button
-                    onClick={() => onEdit(paragraph)}
+                    onClick={handleEditClick}
                     className={`${styles['item-btn']} ${styles['item-btn-edit']}`}
                     title="Редактировать параграф"
                 >

@@ -13,18 +13,12 @@ import { useNotes } from './hooks/useNotes';
 import { useParagraphs } from './hooks/useParagraphs';
 import { useModals } from './hooks/useModals';
 import MasterPasswordDialog from './components/MasterPasswordDialog';
+import ChangePasswordDialog from './components/ChangePasswordDialog';
 
 export default function App() {
     const [searchQuery, setSearchQuery] = useState('');
-    const [isPasswordSet, setIsPasswordSet] = useState(false);
     const [showMasterPassword, setShowMasterPassword] = useState(false);
-
-    // Состояния для диалога смены пароля
     const [showChangePassword, setShowChangePassword] = useState(false);
-    const [oldPassword, setOldPassword] = useState('');
-    const [newPassword, setNewPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [changeError, setChangeError] = useState('');    
 
     const { 
         categories, 
@@ -51,7 +45,7 @@ export default function App() {
         setParagraphs, 
         loadParagraphsByNote, 
         handleAddParagraph, 
-        handleUpdateParagraph, // ------ new
+        handleUpdateParagraph,
         handleDeleteParagraph, 
         handleSearchParagraphs 
     } = useParagraphs();
@@ -90,35 +84,13 @@ export default function App() {
                 // Нет сохраненного пароля → просим придумать
                 setShowMasterPassword(true);
             }
-            // Если есть → просто открываем приложение
         });
     }, []);
 
-    // Функция смены пароля
-    const handleChangePassword = async (e) => {
-        e.preventDefault();
-        setChangeError('');
-        
-        if (newPassword.length < 4) {
-            setChangeError('Минимум 4 символа');
-            return;
-        }
-        if (newPassword !== confirmPassword) {
-            setChangeError('Пароли не совпадают');
-            return;
-        }
-        
-        try {
-            const result = await window.electronAPI.changePassword(oldPassword, newPassword);
-            alert(`✅ Пароль изменен! Перешифровано ${result.reencrypted} параграфов`);
-            setShowChangePassword(false);
-            setOldPassword('');
-            setNewPassword('');
-            setConfirmPassword('');
-        } catch (err) {
-            setChangeError(err.message);
-        }
-    };    
+    const handleChangePassword = async (oldPassword, newPassword) => {
+        const result = await window.electronAPI.changePassword(oldPassword, newPassword);
+        alert(`✅ Пароль изменен! Перешифровано ${result.reencrypted} параграфов`);
+    };   
 
     if (showMasterPassword) {
         return <MasterPasswordDialog onSuccess={() => setShowMasterPassword(false)} />;
@@ -195,77 +167,17 @@ export default function App() {
                         paragraphs={paragraphs}
                         onEdit={openEditParagraphModal}
                         onDelete={handleDeleteParagraph}
-                        searchQuery={searchQuery}  // ← Передаём
+                        searchQuery={searchQuery}  // ← Передаём                       
                     />                 
                 </div>            
             </div>  
 
-
-            {/* Диалог смены пароля */}
             {showChangePassword && (
-                <div style={{
-                    position: 'fixed', inset: 0,
-                    background: 'rgba(0,0,0,0.5)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    zIndex: 9999
-                }}>
-                    <div style={{
-                        background: 'white', padding: 30, borderRadius: 10, width: 340
-                    }}>
-                        <h2 style={{ textAlign: 'center' }}>🔑 Сменить пароль</h2>
-                        
-                        <form onSubmit={handleChangePassword}>
-                            <input
-                                // type="password"
-                                placeholder="Текущий пароль"
-                                value={oldPassword}
-                                onChange={(e) => setOldPassword(e.target.value)}
-                                style={{ width: '100%', padding: 10, margin: '10px 0', border: '1px solid #ccc', borderRadius: 5 }}
-                                required
-                            />
-                            <input
-                                // type="password"
-                                placeholder="Новый пароль (мин. 4 символа)"
-                                value={newPassword}
-                                onChange={(e) => setNewPassword(e.target.value)}
-                                style={{ width: '100%', padding: 10, margin: '10px 0', border: '1px solid #ccc', borderRadius: 5 }}
-                                required
-                            />
-                            <input
-                                // type="password"
-                                placeholder="Повторите новый пароль"
-                                value={confirmPassword}
-                                onChange={(e) => setConfirmPassword(e.target.value)}
-                                style={{ width: '100%', padding: 10, margin: '10px 0', border: '1px solid #ccc', borderRadius: 5 }}
-                                required
-                            />
-                            
-                            {changeError && <p style={{ color: 'red', fontSize: 14 }}>{changeError}</p>}
-                            
-                            <button type="submit" style={{
-                                width: '100%', padding: 10,
-                                background: '#007bff', color: 'white',
-                                border: 'none', borderRadius: 5, cursor: 'pointer'
-                            }}>
-                                Сменить пароль
-                            </button>
-                            <button type="button" onClick={() => {
-                                setShowChangePassword(false);
-                                setChangeError('');
-                                setOldPassword('');
-                                setNewPassword('');
-                                setConfirmPassword('');
-                            }} style={{
-                                width: '100%', padding: 10, marginTop: 10,
-                                background: '#6c757d', color: 'white',
-                                border: 'none', borderRadius: 5, cursor: 'pointer'
-                            }}>
-                                Отмена
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            )}                         
+                <ChangePasswordDialog
+                    onSuccess={handleChangePassword}
+                    onCancel={() => setShowChangePassword(false)}
+                />
+            )}
         </>
     );
 }

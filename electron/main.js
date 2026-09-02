@@ -19,9 +19,9 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const createWindow = () => {
     mainWindow = new BrowserWindow({
-            width: 1100,
-            height: 1100,
-            minWidth: 900,    // ← Минимальная ширина
+            width: 1000,
+            height: 600,
+            minWidth: 940,    // ← Минимальная ширина
             minHeight: 500,   // ← Минимальная высота
             webPreferences: {
                 // preload.js связывает React и Node.js миры
@@ -55,7 +55,7 @@ const createWindow = () => {
 // Этот код выполнится, когда Electron завершит инициализацию.
 app.whenReady().then(() => {
     // Устанавливаем пустое меню
-    // Menu.setApplicationMenu(null);    
+    Menu.setApplicationMenu(null);    
     db = initDatabase(); 
 
     createWindow();

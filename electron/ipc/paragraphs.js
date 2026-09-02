@@ -13,7 +13,6 @@ export const registerParagraphHandlers = (ipcMain, db) => {
             WHERE n.id = ?
         `);
         const result = stmt.get(Number(noteId));
-        console.log(result.name.toLowerCase());
         return result && result.name.toLowerCase() === 'passwords';
     };
 
@@ -119,7 +118,6 @@ export const registerParagraphHandlers = (ipcMain, db) => {
             throw new Error('Название параграфа обязательно');
         }
 
-        // Получаем note_id для проверки категории
         const noteStmt = db.prepare('SELECT note_id FROM paragraphs WHERE id = ?');
         const paragraph = noteStmt.get(id);
         
@@ -130,19 +128,46 @@ export const registerParagraphHandlers = (ipcMain, db) => {
         let contentToSave = content;
         let isEncrypted = 0;
 
-        // Если категория "passwords" - шифруем
         if (isPasswordCategory(paragraph.note_id)) {
             contentToSave = encrypt(content);
             isEncrypted = 1;
         }
 
-        const stmt = db.prepare(`
+        const updateStmt = db.prepare(`
             UPDATE paragraphs 
             SET title = ?, content = ?, is_encrypted = ?, updated_at = CURRENT_TIMESTAMP
             WHERE id = ?
         `);
-        const info = stmt.run(title.trim(), contentToSave, isEncrypted, id);
-        return info.changes > 0;
+        const info = updateStmt.run(title.trim(), contentToSave, isEncrypted, id);
+        
+        if (info.changes === 0) {
+            throw new Error('Параграф не найден');
+        }
+
+        const selectStmt = db.prepare(`
+            SELECT 
+                id,
+                note_id,
+                title,
+                content,
+                is_encrypted,
+                created_at,
+                updated_at
+            FROM paragraphs 
+            WHERE id = ?
+        `);
+        const result = selectStmt.get(id);
+        
+        // ✅ Если параграф зашифрован — расшифровываем перед отправкой
+        if (result && result.is_encrypted) {
+            try {
+                result.content = decrypt(result.content);
+            } catch (error) {
+                result.content = '🔒 Ошибка расшифровки';
+            }
+        }
+        
+        return result;
     });
 
     ipcMain.handle('paragraph:delete', (event, id) => {

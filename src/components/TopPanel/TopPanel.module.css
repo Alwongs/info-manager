@@ -29,6 +29,12 @@
     margin-left: 1px;
 }
 
+.version {
+    color: #fff;
+    font-weight: 300;
+    font-size: 14px;
+}
+
 .search-form {
     border: 2px solid #e2e8f0;
     height: 74%;

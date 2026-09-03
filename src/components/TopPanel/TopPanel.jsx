@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styles from "./TopPanel.module.css";
+import packageJson from '../../../package.json';
 
 export default function TopPanel({ onSearch, onChangePassword  }) {
     const [phrase, setPhrase] = useState('');
@@ -33,6 +34,8 @@ export default function TopPanel({ onSearch, onChangePassword  }) {
                     🔑 Сменить пароль
                 </li>                
             </ul>
+
+            <p className={styles['version']}>v: {packageJson.version}</p>
 
             <form
                 className={styles['search-form']}

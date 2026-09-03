@@ -54,6 +54,7 @@ export const encrypt = (text) => {
 
 // --- Расшифровка (простая) ---
 export const decrypt = (encryptedData) => {
+    console.log('encrypt: ' + encryptedData)
     if (!encryptedData || !masterKey) return encryptedData;
 
     try {

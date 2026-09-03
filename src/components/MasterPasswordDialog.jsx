@@ -52,7 +52,7 @@ export default function MasterPasswordDialog({ onSuccess, onCancel, error: exter
                 
                 <form onSubmit={handleSubmit}>
                     <input
-                        type="password"
+                        // type="password"
                         placeholder="Пароль"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
@@ -63,7 +63,7 @@ export default function MasterPasswordDialog({ onSuccess, onCancel, error: exter
                     
                     {isNewUser && (
                         <input
-                            type="password"
+                            // type="password"
                             placeholder="Повторите пароль"
                             value={confirmPassword}
                             onChange={(e) => setConfirmPassword(e.target.value)}

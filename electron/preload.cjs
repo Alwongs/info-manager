@@ -31,6 +31,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
     clearMasterPassword: () => ipcRenderer.invoke('password:clear'),
     isMasterPasswordSet: () => ipcRenderer.invoke('password:isSet'),
     changePassword: (oldPassword, newPassword) => ipcRenderer.invoke('password:change', oldPassword, newPassword),
+    getMasterPassword: () => ipcRenderer.invoke('password:get'),   
 
 
     getNotesByPhrase: (phrase) => ipcRenderer.invoke('note:getByPhrase', phrase),  

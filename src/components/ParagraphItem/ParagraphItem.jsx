@@ -56,17 +56,16 @@ export default function ParagraphItem({ paragraph, onDelete, onEdit, searchQuery
     };
 
     const handleEditClick = async () => {
-        let decryptedContentToEdit = paragraph.content;
-        
-        if (paragraph.is_encrypted) {
-            try {
-                const result = await window.electronAPI.decryptParagraph(paragraph.id);
-                decryptedContentToEdit = result.content;
-            } catch (error) {
-                console.error('Ошибка расшифровки:', error);
-                decryptedContentToEdit = '🔒 Ошибка расшифровки';
-            }
+        // Если параграф зашифрован и не расшифрован — просим пароль
+        if (paragraph.is_encrypted && !isDecrypted) {
+            setShowPasswordDialog(true);
+            return;
         }
+
+        let decryptedContentToEdit = paragraph.content;
+        if (paragraph.is_encrypted && isDecrypted) {
+            decryptedContentToEdit = decryptedContent;
+        }        
         
         onEdit({
             ...paragraph,
@@ -128,10 +127,6 @@ export default function ParagraphItem({ paragraph, onDelete, onEdit, searchQuery
                     Удалить
                 </button>
             </div>
-
-            <p className={styles['item-bottom']}>
-                ----- end of paragraph ----------------------------------------------------------------------------
-            </p>
 
             {showPasswordDialog && (
                 <MasterPasswordDialog 

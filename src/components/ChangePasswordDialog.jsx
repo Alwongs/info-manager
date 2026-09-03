@@ -40,7 +40,7 @@ export default function ChangePasswordDialog({ onSuccess, onCancel }) {
                 
                 <form onSubmit={handleSubmit}>
                     <input
-                        type="password"
+                        // type="password"
                         placeholder="Текущий пароль"
                         value={oldPassword}
                         onChange={(e) => setOldPassword(e.target.value)}
@@ -49,7 +49,7 @@ export default function ChangePasswordDialog({ onSuccess, onCancel }) {
                         disabled={isLoading}
                     />
                     <input
-                        type="password"
+                        // type="password"
                         placeholder="Новый пароль (мин. 4 символа)"
                         value={newPassword}
                         onChange={(e) => setNewPassword(e.target.value)}
@@ -58,7 +58,7 @@ export default function ChangePasswordDialog({ onSuccess, onCancel }) {
                         disabled={isLoading}
                     />
                     <input
-                        type="password"
+                        // type="password"
                         placeholder="Повторите новый пароль"
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}

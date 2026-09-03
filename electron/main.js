@@ -19,9 +19,9 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const createWindow = () => {
     mainWindow = new BrowserWindow({
-            width: 1000,
-            height: 600,
-            minWidth: 940,    // ← Минимальная ширина
+            width: 1100,
+            height: 700,
+            minWidth: 1020,    // ← Минимальная ширина
             minHeight: 500,   // ← Минимальная высота
             webPreferences: {
                 // preload.js связывает React и Node.js миры

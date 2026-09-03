@@ -12,6 +12,14 @@ import {
 
 export const registerPasswordHandlers = (ipcMain, db) => {
 
+    ipcMain.handle('password:get', () => {
+        const password = loadPassword();
+        if (password) {
+            return { success: true, password };
+        }
+        return { success: false, password: null };
+    });
+
     ipcMain.handle('password:set', (event, password) => {
         setMasterPassword(password);
         savePassword(password);
@@ -32,6 +40,7 @@ export const registerPasswordHandlers = (ipcMain, db) => {
     });
 
     ipcMain.handle('password:change', (event, oldPassword, newPassword) => {
+        // console.log(oldPassword, newPassword)
         // 1. Загружаем сохраненный пароль в память (старый ключ)
         const savedPassword = loadPassword();
         if (!savedPassword) {

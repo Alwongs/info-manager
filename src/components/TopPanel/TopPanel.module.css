@@ -22,6 +22,11 @@
     /* color: #fff;
     font-size: 10px; */
     cursor: pointer;
+    transition: 0.3s;
+}
+.menu-item:hover {
+    color: rgb(0, 238, 255);
+    margin-left: 1px;
 }
 
 .search-form {

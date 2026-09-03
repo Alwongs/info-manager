@@ -139,7 +139,10 @@ export default function App() {
                 />
 
                 <div className={styles['categories-column']}>
-                    <ColumnHeader title="Категории" onAdd={openCategoryModal} />
+                    <ColumnHeader
+                        title="Categories"
+                        onAdd={openCategoryModal}
+                    />
                     <CategoryList
                         categories={categories}
                         onEdit={openEditCategoryModal}
@@ -150,24 +153,30 @@ export default function App() {
                 </div>  
 
                 <div className={styles['notes-column']}>
-                    <ColumnHeader title="Заметки" onAdd={openNoteModal} />
+                    <ColumnHeader
+                        title="Notes"
+                        onAdd={openNoteModal}
+                    />
                     <NoteList
                         notes={notes}
                         onEdit={openEditNoteModal}
                         onDelete={handleDeleteNote}
                         onSelectNote={handleSelectNote}
                         selectedNoteId={selectedNoteId}
-                        searchQuery={searchQuery}  // ← Передаём
+                        searchQuery={searchQuery}
                     /> 
                 </div>
 
                 <div className={styles['detail-column']}>
-                    <ColumnHeader title="Записи заметок" onAdd={openParagraphModal} />
+                    <ColumnHeader
+                        title="Pages"
+                        onAdd={openParagraphModal}
+                    />
                     <ParagraphList
                         paragraphs={paragraphs}
                         onEdit={openEditParagraphModal}
                         onDelete={handleDeleteParagraph}
-                        searchQuery={searchQuery}  // ← Передаём                       
+                        searchQuery={searchQuery}                    
                     />                 
                 </div>            
             </div>  

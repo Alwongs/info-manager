@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 export default function NoteModal({ visible, onClose, onAdd, categories = [], selectedCategoryId = '', onUpdate = null, editingItem = null }) {
-    const inputRef = useRef(null);
     const [title, setTitle] = useState('');
     const [_selectedCategoryId, setSelectedCategoryId] = useState(selectedCategoryId || '');
 
@@ -21,14 +20,6 @@ export default function NoteModal({ visible, onClose, onAdd, categories = [], se
     useEffect(() => {
         setSelectedCategoryId(selectedCategoryId);
     }, [selectedCategoryId]);    
-
-    useEffect(() => {
-        if (visible) {
-            setTimeout(() => inputRef.current?.focus(), 400);
-        }
-    }, [visible]);  
-
-
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -83,7 +74,6 @@ export default function NoteModal({ visible, onClose, onAdd, categories = [], se
                 >
                     <div className={styles['input-container']}>
                         <input
-                            ref={inputRef}
                             id="noteModalInput"
                             className={styles['input-field']} 
                             type="text"

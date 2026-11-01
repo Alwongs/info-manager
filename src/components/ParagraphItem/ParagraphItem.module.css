@@ -1,8 +1,8 @@
 .item {
     background-color: #fff;
-    /* border-radius: 10px; */
-    /* box-shadow: 0 0 10px 1px rgba(100, 100, 100, 0.1); */
-    padding: 4px 20px 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 5px 1px rgba(100, 100, 100, 0.3);
+    padding: 6px 10px 6px;
     margin-bottom: 30px;
     /* border-bottom: 1px solid rgb(235, 235, 235); */
 }
@@ -18,7 +18,7 @@
     /* border: 1px solid red; */
     font-size: 16px;
     color: #656f7a;
-    border-top: 2px dotted #9baabb;
+    /* border-top: 2px dotted #9baabb; */
     border-bottom: 2px dotted #9baabb;
     margin-bottom: 10px;  
     padding: 2px 10px 5px;
@@ -46,12 +46,12 @@
 
 .item-btn {
     border: 1px solid transparent;
-    border-radius: 4px;
+    border-radius: 14px;
     padding: 3px 10px;
     cursor: pointer;
     /* min-width: 60px; */
     font-size: 11px;
-    transition: 0.2s;
+    transition: 0.3s;
     text-decoration: underline;
 }
 .item-btn-edit {
@@ -79,12 +79,12 @@
 
 
 .item-btn-decrypt {
-    background-color: #4CAF50;
+    background-color: #258a28;
     color: white;
 }
 
 .item-btn-decrypt:hover:not(:disabled) {
-    background-color: #45a049;
+    background-color: #47ad4c;
 }
 
 .item-btn-decrypt:disabled {

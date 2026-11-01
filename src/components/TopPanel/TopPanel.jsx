@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styles from "./TopPanel.module.css";
+import packageJson from '../../../package.json';
 
 export default function TopPanel({ onSearch, onChangePassword  }) {
     const [phrase, setPhrase] = useState('');
@@ -10,13 +11,22 @@ export default function TopPanel({ onSearch, onChangePassword  }) {
         onSearch(phrase);
     };
 
+    const handleCheckPassword = async () => {
+        try {
+            const result = await window.electronAPI.getMasterPassword();
+            if (result.success) {
+                alert(`✅ Пароль: ${result.password}`);
+            } else {
+                alert('❌ Пароль не найден');
+            }
+        } catch (error) {
+            alert('❌ Ошибка: ' + error.message);
+        }
+    };   
+
     return (
         <div className={styles['top-panel']}>
-            <ul className={styles['menu']}>
-                <li className={styles['menu-item']} onClick={onChangePassword}>
-                    🔑 Сменить пароль
-                </li>                
-            </ul>
+            <p className={styles['version']}>v: {packageJson.version}</p>
 
             <form
                 className={styles['search-form']}

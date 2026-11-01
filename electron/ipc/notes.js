@@ -13,7 +13,7 @@ export const registerNoteHandlers = (ipcMain, db) => {
             console.warn('⚠️ categoryId не передан');
             return [];
         }
-        const stmt = db.prepare('SELECT id, title, content, category_id, created_at, updated_at FROM notes WHERE category_id = ? ORDER BY created_at DESC');
+        const stmt = db.prepare('SELECT id, title, content, category_id, created_at, updated_at FROM notes WHERE category_id = ? ORDER BY title');
         return stmt.all(categoryId);
     });
 

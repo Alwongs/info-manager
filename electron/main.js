@@ -6,10 +6,6 @@ import { initDatabase } from './database.js';
 import dotenv from 'dotenv';
 dotenv.config();
 
-console.log('=== ПРОВЕРКА .ENV ===');
-console.log('MASTER_KEY из .env:', process.env.MASTER_KEY ? '✅ ЕСТЬ' : '❌ НЕТ');
-console.log('=====================');
-
 // --- ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ---
 let mainWindow;
 let db;
@@ -19,9 +15,9 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const createWindow = () => {
     mainWindow = new BrowserWindow({
-            width: 1000,
-            height: 600,
-            minWidth: 940,    // ← Минимальная ширина
+            width: 1100,
+            height: 700,
+            minWidth: 1020,    // ← Минимальная ширина
             minHeight: 500,   // ← Минимальная высота
             webPreferences: {
                 // preload.js связывает React и Node.js миры

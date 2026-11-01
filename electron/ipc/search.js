@@ -52,29 +52,29 @@ export const registerSearchHandlers = (ipcMain, db) => {
             const searchLower = `%${trimmed.toLowerCase()}%`;
             const searchUpper = `%${trimmed.toUpperCase()}%`;
             const searchCapitalized = `%${trimmed.charAt(0).toUpperCase() + trimmed.slice(1).toLowerCase()}%`;
-            
+
             const stmt = db.prepare(`
                 SELECT 
                     id, 
+                    note_id,
                     title, 
                     content, 
                     created_at, 
                     updated_at
                 FROM paragraphs 
-                WHERE title LIKE ? 
-                OR content LIKE ?
-                OR title LIKE ? 
-                OR content LIKE ?
-                OR title LIKE ?
-                OR content LIKE ?
+                WHERE (
+                    title   LIKE ? OR title   LIKE ? OR title   LIKE ?
+                    OR
+                    content LIKE ? OR content LIKE ? OR content LIKE ?
+                )
                 ORDER BY created_at DESC
             `);
-            
+
             return stmt.all(
-                searchLower, searchLower,
-                searchUpper, searchUpper,
-                searchCapitalized, searchCapitalized
-            );
+                searchLower, searchUpper, searchCapitalized,   // title
+                searchLower, searchUpper, searchCapitalized    // content
+            );           
+            
         } catch (error) {
             console.error('❌ Ошибка поиска по параграфам:', error);
             return [];

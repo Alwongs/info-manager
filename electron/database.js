@@ -60,11 +60,18 @@ export const initDatabase = () => {
         )
     `);  
 
+    // try {
+    //     dbInstance.exec(`ALTER TABLE paragraphs ADD COLUMN is_encrypted INTEGER DEFAULT 0`);
+    //     console.log('✅ Поле is_encrypted добавлено в таблицу paragraphs');
+    // } catch (e) {
+    //     console.info('The field is_encrypted is already exist')
+    // }    
+
     try {
-        dbInstance.exec(`ALTER TABLE paragraphs ADD COLUMN is_encrypted INTEGER DEFAULT 0`);
-        console.log('✅ Поле is_encrypted добавлено в таблицу paragraphs');
+        dbInstance.exec(`ALTER TABLE paragraphs DROP COLUMN is_encrypted`);
+        console.log('✅ Поле is_encrypted удалено из таблицы paragraphs');
     } catch (e) {
-        console.info('The field is_encrypted is already exist')
+        console.info('Поля is_encrypted не существует или не может быть удалено');
     }    
 
     dbInstance.exec(`

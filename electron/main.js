@@ -6,10 +6,6 @@ import { initDatabase } from './database.js';
 import dotenv from 'dotenv';
 dotenv.config();
 
-console.log('=== ПРОВЕРКА .ENV ===');
-console.log('MASTER_KEY из .env:', process.env.MASTER_KEY ? '✅ ЕСТЬ' : '❌ НЕТ');
-console.log('=====================');
-
 // --- ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ---
 let mainWindow;
 let db;

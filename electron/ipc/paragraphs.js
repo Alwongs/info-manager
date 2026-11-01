@@ -1,20 +1,19 @@
-import { encrypt, decrypt, isMasterPasswordSet } from './encryption.js';
-
 export const registerParagraphHandlers = (ipcMain, db) => {
     if (!db) {
         throw new Error('База данных не передана в обработчики параграфов');
     }
 
-    const isPasswordCategory = (noteId) => {
-        const stmt = db.prepare(`
-            SELECT c.name 
-            FROM categories c
-            JOIN notes n ON n.category_id = c.id
-            WHERE n.id = ?
-        `);
-        const result = stmt.get(Number(noteId));
-        return result && result.name.toLowerCase() === 'passwords';
-    };
+    // TO DELETE
+    // const isPasswordCategory = (noteId) => {
+    //     const stmt = db.prepare(`
+    //         SELECT c.name 
+    //         FROM categories c
+    //         JOIN notes n ON n.category_id = c.id
+    //         WHERE n.id = ?
+    //     `);
+    //     const result = stmt.get(Number(noteId));
+    //     return result && result.name.toLowerCase() === 'passwords';
+    // };
 
     ipcMain.handle('paragraph:getByNote', (event, id) => {
         if (!id || isNaN(Number(id))) {
@@ -25,8 +24,7 @@ export const registerParagraphHandlers = (ipcMain, db) => {
                 id,
                 note_id,
                 title,
-                content,  -- зашифрованный или нет
-                is_encrypted,
+                content,
                 created_at,
                 updated_at
             FROM paragraphs 
@@ -35,39 +33,6 @@ export const registerParagraphHandlers = (ipcMain, db) => {
         `);
         const paragraphs = stmt.all(Number(id));
         return paragraphs;
-    });
-
-    ipcMain.handle('paragraph:decrypt', (event, id) => {
-        // Проверяем, установлен ли пароль в памяти
-        if (!isMasterPasswordSet()) {
-            throw new Error('MASTER_PASSWORD_REQUIRED');
-        }        
-        
-        const stmt = db.prepare(`
-            SELECT id, content, is_encrypted 
-            FROM paragraphs 
-            WHERE id = ?
-        `);
-        const paragraph = stmt.get(id);
-        
-        if (!paragraph) {
-            throw new Error('Параграф не найден');
-        }
-        
-        if (!paragraph.is_encrypted) {
-            return { id: paragraph.id, content: paragraph.content };
-        }
-        
-        try {
-            const decryptedContent = decrypt(paragraph.content);
-            return { 
-                id: paragraph.id, 
-                content: decryptedContent 
-            };
-        } catch (error) {
-            console.error('Ошибка расшифровки:', error);
-            throw new Error('Неверный пароль');
-        }
     });
 
     ipcMain.handle('paragraph:add', (event, noteId, title = '', content) => {
@@ -84,10 +49,10 @@ export const registerParagraphHandlers = (ipcMain, db) => {
         }
 
         const stmt = db.prepare(`
-            INSERT INTO paragraphs (note_id, title, content, is_encrypted) 
-            VALUES (?, ?, ?, ?)
+            INSERT INTO paragraphs (note_id, title, content) 
+            VALUES (?, ?, ?)
         `);
-        const info = stmt.run(Number(noteId), title, contentToSave, isEncrypted);
+        const info = stmt.run(Number(noteId), title, contentToSave);
 
         const selectStmt = db.prepare(`
             SELECT 
@@ -95,7 +60,6 @@ export const registerParagraphHandlers = (ipcMain, db) => {
                 note_id,
                 title,
                 content,
-                is_encrypted,
                 created_at,
                 updated_at
             FROM paragraphs 
@@ -126,19 +90,13 @@ export const registerParagraphHandlers = (ipcMain, db) => {
         }
 
         let contentToSave = content;
-        let isEncrypted = 0;
-
-        if (isPasswordCategory(paragraph.note_id)) {
-            contentToSave = encrypt(content);
-            isEncrypted = 1;
-        }
 
         const updateStmt = db.prepare(`
             UPDATE paragraphs 
-            SET title = ?, content = ?, is_encrypted = ?, updated_at = CURRENT_TIMESTAMP
+            SET title = ?, content = ?, updated_at = CURRENT_TIMESTAMP
             WHERE id = ?
         `);
-        const info = updateStmt.run(title.trim(), contentToSave, isEncrypted, id);
+        const info = updateStmt.run(title.trim(), contentToSave, id);
         
         if (info.changes === 0) {
             throw new Error('Параграф не найден');
@@ -150,22 +108,12 @@ export const registerParagraphHandlers = (ipcMain, db) => {
                 note_id,
                 title,
                 content,
-                is_encrypted,
                 created_at,
                 updated_at
             FROM paragraphs 
             WHERE id = ?
         `);
         const result = selectStmt.get(id);
-        
-        // ✅ Если параграф зашифрован — расшифровываем перед отправкой
-        if (result && result.is_encrypted) {
-            try {
-                result.content = decrypt(result.content);
-            } catch (error) {
-                result.content = '🔒 Ошибка расшифровки';
-            }
-        }
         
         return result;
     });

@@ -4,7 +4,7 @@ export const registerCategoryHandlers = (ipcMain, db) => {
     }
 
     ipcMain.handle('category:getAll', () => {
-        const rows = db.prepare('SELECT id, name FROM categories').all();
+        const rows = db.prepare('SELECT id, name FROM categories ORDER BY name').all();
         return rows;
     });
 

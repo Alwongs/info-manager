@@ -5,7 +5,6 @@ import { faPlus, faPen } from '@fortawesome/free-solid-svg-icons';
 
 export default function CategoryModal({ visible, onClose, onAdd, onEdit = null, editingItem = null }) {
     const [name, setName] = useState('');
-    const inputRef = useRef(null);
 
     // ✅ Заполняем форму при редактировании
     useEffect(() => {
@@ -15,13 +14,6 @@ export default function CategoryModal({ visible, onClose, onAdd, onEdit = null, 
             setName('');
         }
     }, [visible, editingItem]);
-
-    // ✅ Фокус при открытии
-    useEffect(() => {
-        if (visible) {
-            setTimeout(() => inputRef.current?.focus(), 100);
-        }
-    }, [visible]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -70,7 +62,6 @@ export default function CategoryModal({ visible, onClose, onAdd, onEdit = null, 
                 <form className={styles['modal-form']} onSubmit={handleSubmit}>
                     <div className={styles['input-container']}>
                         <input
-                            ref={inputRef}
                             id="categoryModalInput"
                             className={styles['input-field']} 
                             type="text"

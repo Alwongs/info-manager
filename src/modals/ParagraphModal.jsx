@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 export default function ParagraphModal({ visible, onClose, onSave, onAdd, onUpdate, editingItem, noteId, noteTitle = '' }) {
-    const inputRef = useRef(null);
     const [title, setTitle] = useState('');  
     const [content, setContent] = useState(''); 
 
@@ -19,14 +18,6 @@ export default function ParagraphModal({ visible, onClose, onSave, onAdd, onUpda
             setContent('');
         }
     }, [visible, editingItem]); 
-
-    useEffect(() => {
-        if (visible) {
-            setTimeout(() => inputRef.current?.focus(), 400);
-        }
-    }, [visible]);  
-
-
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -84,7 +75,6 @@ export default function ParagraphModal({ visible, onClose, onSave, onAdd, onUpda
                 >
                     <div className={styles['input-container']}>
                         <input
-                            ref={inputRef}
                             id="paragraphModalInput"
                             className={styles['input-field']} 
                             type="text"

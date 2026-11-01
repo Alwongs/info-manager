@@ -26,15 +26,6 @@ export default function TopPanel({ onSearch, onChangePassword  }) {
 
     return (
         <div className={styles['top-panel']}>
-            <ul className={styles['menu']}>
-                <li className={styles['menu-item']} onClick={handleCheckPassword}>
-                    🔍 Проверить пароль
-                </li>                
-                <li className={styles['menu-item']} onClick={onChangePassword}>
-                    🔑 Сменить пароль
-                </li>                
-            </ul>
-
             <p className={styles['version']}>v: {packageJson.version}</p>
 
             <form

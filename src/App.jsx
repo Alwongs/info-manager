@@ -12,13 +12,9 @@ import { useCategories } from './hooks/useCategories';
 import { useNotes } from './hooks/useNotes';
 import { useParagraphs } from './hooks/useParagraphs';
 import { useModals } from './hooks/useModals';
-import MasterPasswordDialog from './components/MasterPasswordDialog';
-import ChangePasswordDialog from './components/ChangePasswordDialog';
 
 export default function App() {
     const [searchQuery, setSearchQuery] = useState('');
-    const [showMasterPassword, setShowMasterPassword] = useState(false);
-    const [showChangePassword, setShowChangePassword] = useState(false);
 
     const { 
         categories, 
@@ -75,26 +71,7 @@ export default function App() {
         } else {
             setParagraphs([]);
         }
-    }, [selectedNoteId]);
-
-    // При первом запуске проверяем, есть ли сохраненный пароль
-    useEffect(() => {
-        window.electronAPI.hasMasterPassword().then(has => {
-            if (!has) {
-                // Нет сохраненного пароля → просим придумать
-                setShowMasterPassword(true);
-            }
-        });
-    }, []);
-
-    const handleChangePassword = async (oldPassword, newPassword) => {
-        const result = await window.electronAPI.changePassword(oldPassword, newPassword);
-        alert(`✅ Пароль изменен! Перешифровано ${result.reencrypted} параграфов`);
-    };   
-
-    if (showMasterPassword) {
-        return <MasterPasswordDialog onSuccess={() => setShowMasterPassword(false)} />;
-    }  
+    }, [selectedNoteId]); 
 
     const handleSearchPhrase = async (phrase) => {
         setSearchQuery(phrase);
@@ -106,10 +83,7 @@ export default function App() {
 
     return (
         <>
-            <TopPanel
-                onSearch={handleSearchPhrase} 
-                onChangePassword={() => setShowChangePassword(true)}
-            />
+            <TopPanel onSearch={handleSearchPhrase} />
             
             <div className={styles.app}>
                 <CategoryModal
@@ -169,7 +143,7 @@ export default function App() {
 
                 <div className={styles['detail-column']}>
                     <ColumnHeader
-                        title="Pages"
+                        title="Paragraphs"
                         onAdd={openParagraphModal}
                     />
                     <ParagraphList
@@ -180,13 +154,6 @@ export default function App() {
                     />                 
                 </div>            
             </div>  
-
-            {showChangePassword && (
-                <ChangePasswordDialog
-                    onSuccess={handleChangePassword}
-                    onCancel={() => setShowChangePassword(false)}
-                />
-            )}
         </>
     );
 }

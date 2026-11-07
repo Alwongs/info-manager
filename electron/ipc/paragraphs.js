@@ -3,18 +3,6 @@ export const registerParagraphHandlers = (ipcMain, db) => {
         throw new Error('База данных не передана в обработчики параграфов');
     }
 
-    // TO DELETE
-    // const isPasswordCategory = (noteId) => {
-    //     const stmt = db.prepare(`
-    //         SELECT c.name 
-    //         FROM categories c
-    //         JOIN notes n ON n.category_id = c.id
-    //         WHERE n.id = ?
-    //     `);
-    //     const result = stmt.get(Number(noteId));
-    //     return result && result.name.toLowerCase() === 'passwords';
-    // };
-
     ipcMain.handle('paragraph:getByNote', (event, id) => {
         if (!id || isNaN(Number(id))) {
             return [];
@@ -40,19 +28,11 @@ export const registerParagraphHandlers = (ipcMain, db) => {
             throw new Error('ID заметки и содержимое обязательны');
         }
 
-        let contentToSave = content;
-        let isEncrypted = 0;
-
-        if (isPasswordCategory(noteId)) {
-            contentToSave = encrypt(content);
-            isEncrypted = 1;
-        }
-
         const stmt = db.prepare(`
             INSERT INTO paragraphs (note_id, title, content) 
             VALUES (?, ?, ?)
         `);
-        const info = stmt.run(Number(noteId), title, contentToSave);
+        const info = stmt.run(Number(noteId), title, content);
 
         const selectStmt = db.prepare(`
             SELECT 
